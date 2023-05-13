@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>授权码模式</title>
+</head>
+<body>
+<h1>欢迎</h1>
+<div>
+    <span id="username"></span>
+    <input type="button" id="logout" value="退出" onclick="logout()"/>
+</div>
+<script type="text/javascript" src="../lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../js/api.js"></script>
+<script>
+    let url="/auth/user/current/info";
+    let client_id = "client2";
+    let client_secret = "1234";
+    let resp_type = "code";
+    let redirect_uri = "http://localhost:8088/auth/oauth2/callback";
+    let scope = "foo";
+    let auth_url =
+        '/auth/oauth/authorize' +
+        '?' +
+        'response_type=' +
+        encodeURI(resp_type) +
+        '&' +
+        'client_id=' +
+        encodeURI(client_id) +
+        '&' +
+        'redirect_uri=' +
+        encodeURI(redirect_uri) +
+        '&' +
+        'scope=' +
+        encodeURI(scope);
+    let logout_url = "/auth/logout" +
+        '?' +
+        'response_type=' +
+        encodeURI(resp_type) +
+        '&' +
+        'client_id=' +
+        encodeURI(client_id) +
+        '&' +
+        'redirect_uri=' +
+        encodeURI(redirect_uri) +
+        '&' +
+        'scope=' +
+        encodeURI(scope);
+    Auth.Api.get(url, null,
+        function (res) {
+            if (res.status != 0) {
+                window.location.href = auth_url;
+            } else {
+                $("#username").text(res.data.name);
+            }
+        }, function (res) {
+            alert(res);
+        });
+    function logout(){
+        window.location.href=logout_url;
+    }
+</script>
+</body>
+</html>

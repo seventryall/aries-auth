@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html class="loginHtml">
+<head>
+    <meta charset="utf-8">
+    <title>Test</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+
+</head>
+<body>
+<script type="text/javascript" src="../lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../js/api.js"></script>
+<script>
+    let query = window.location.search.substring(1);
+    let vars = query.split("&");
+    let code;
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == 'code') {
+            code = pair[1];
+        }
+    }
+    //alert(code);
+    let client_id = "client2";
+    let client_secret = "1234";
+    let redirect_uri = "http://localhost:8088/auth/oauth2/callback";
+    let token_url =
+        '/auth/oauth2/token' +
+        '?' +
+        'grant_type=' +
+        encodeURI('authorization_code') +
+        '&' +
+        'client_id=' +
+        encodeURI(client_id) +
+        '&' +
+        'client_secret=' +
+        encodeURI(client_secret) +
+        '&' +
+        'code=' +
+        encodeURI(code) +
+        '&' +
+        'redirect_uri=' +
+        encodeURI(redirect_uri);
+
+
+    Auth.Api.post(token_url, null,
+        function (res) {
+            //alert(res.access_token);
+            window.location.href = "/auth/oauth2/welcome2";
+
+        }, function (res) {
+            alert(res);
+        });</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+</head>
+<body>
+<h1>统一登录</h1>
+
+<script type="text/javascript" src="../lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../js/api.js"></script>
+
+<script type="text/javascript">
+    let query = window.location.search.substring(1);
+    let vars = query.split("&");
+    let redirect_uri;
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == 'redirect_uri') {
+            redirect_uri = pair[1];
+        }
+    }
+    function login(){
+        let username=$("#username").val();
+        let password=$("#password").val();
+        Auth.Api.post("http://localhost:8088/auth/oauth2/loginByPassword", {username:username,password:password},
+            function (res) {
+            if(res.status==0){
+                window.location.href=redirect_uri||"/auth/oauth2/welcome";
+            }else{
+                alert(res.statusText);
+            }
+            }, function (res) {
+                alert(res);
+            },"application/x-www-form-urlencoded",false);
+        return false;
+    }
+</script>
+<form action="">
+
+    username: <input type="text" name="username" id="username"/> <br/>
+    password: <input type="password" name="password" id="password"/> <br/>
+    <input type="button" value="登录" onclick="login()"/>
+
+
+</form>
+
+</body>
+</html>

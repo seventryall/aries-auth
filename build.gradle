@@ -1,0 +1,221 @@
+//plugins {
+//    id 'java'
+//}
+//
+//group 'com.mountainpier'
+//version '1.0-SNAPSHOT'
+//
+//sourceCompatibility = 1.8
+//
+//repositories {
+//    mavenCentral()
+//}
+//
+//dependencies {
+//    testCompile group: 'junit', name: 'junit', version: '4.12'
+//}
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/spring' }
+        maven { url 'https://maven.aliyun.com/repository/spring-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url 'http://central.maven.org/maven2/' }
+        maven { url 'http://repo.spring.io/plugins-release' }
+        maven { url 'https://maven-central.storage.googleapis.com' }
+        maven { url 'http://maven.oschina.net/content/groups/public/' }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion")
+        classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
+        classpath 'org.akhikhl.gretty:gretty:1.2.4'
+        classpath "org.flywaydb:flyway-gradle-plugin:3.2.1"
+    }
+}
+configure(allprojects) {
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-maven'
+    apply plugin: 'propdeps-idea'
+    apply plugin: 'propdeps-eclipse'
+}
+subprojects {
+    apply plugin: 'idea'
+    apply plugin: "java"
+    group = 'com.star'
+    version = '0.1-SNAPSHOT'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/spring' }
+        maven { url 'https://maven.aliyun.com/repository/spring-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url 'http://central.maven.org/maven2/' }
+        maven { url 'http://repo.spring.io/plugins-release' }
+        maven { url 'https://maven-central.storage.googleapis.com' }
+        maven { url 'http://maven.oschina.net/content/groups/public/' }
+    }
+    dependencies {
+        //compile 'org.projectlombok:lombok:1.18.4'
+        annotationProcessor 'org.projectlombok:lombok:1.18.4'
+        compileOnly 'org.projectlombok:lombok:1.18.4'//implementation
+        compile 'com.google.guava:guava:29.0-jre'
+        compile 'com.alibaba:fastjson:1.2.29'
+        compile 'junit:junit:4.12'
+        compile 'com.google.code.gson:gson:2.6.2'
+        compile 'org.apache.commons:commons-lang3:3.7'
+        compile 'commons-collections:commons-collections:3.2.2'
+        compile 'com.fasterxml.jackson.core:jackson-databind:2.11.1'
+        compile 'org.slf4j:slf4j-api:1.7.25'
+    }
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+}
+project(':aries-auth-common') {
+    dependencies {
+        compile 'joda-time:joda-time:2.9.1'
+        compile 'com.belerweb:pinyin4j:2.5.0'
+        compile("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.9")
+        compile("com.thoughtworks.xstream:xstream:1.4.11.1")
+        compile("commons-io:commons-io:2.6")
+    }
+}
+
+project(':aries-auth-dal') {
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencies {
+        compile project(":aries-auth-common")
+        compile project(":aries-auth-storage")
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+        }
+    }
+
+}
+
+
+project(':aries-auth-server') {
+    apply plugin: 'idea'
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencies {
+        compile project(":aries-auth-dal")
+        compile("org.springframework.boot:spring-boot-starter-security")
+        compile 'org.springframework.security:spring-security-jwt:1.1.1.RELEASE'
+        compile("org.springframework.security.oauth:spring-security-oauth2:2.1.6.RELEASE")
+        compile("org.springframework.boot:spring-boot-starter-web")
+        compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+        compile("org.springframework.boot:spring-boot-starter-aop")
+        compile("com.auth0:java-jwt:3.10.3")
+        annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+        }
+    }
+}
+
+project(':aries-auth-storage') {
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencies {
+        compile project(":aries-auth-common")
+        compile('com.alibaba:druid-spring-boot-starter:1.1.17')
+        compile 'mysql:mysql-connector-java:8.0.16'
+        compile('org.springframework.boot:spring-boot-starter-jdbc')
+        compile('org.springframework.boot:spring-boot-starter-data-redis')
+        compile 'redis.clients:jedis:3.0.1'
+    }
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+        }
+    }
+}
+
+project(':aries-auth-client') {
+    apply plugin: 'idea'
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencies {
+        compile project(":aries-auth-facade")
+        compile("org.springframework.boot:spring-boot-starter-web")
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+        }
+    }
+}
+
+project(':aries-auth-facade') {
+//    apply plugin: 'idea'
+//    apply plugin: 'java'
+//    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencies {
+        compile project(":aries-auth-common")
+        compileOnly("org.springframework.boot:spring-boot-starter-web")
+        compile("org.springframework.security.oauth:spring-security-oauth2:2.1.6.RELEASE")
+        compile 'org.springframework.security:spring-security-jwt:1.1.1.RELEASE'
+       // annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+        }
+    }
+}
+
+project(':aries-auth-client2') {
+    apply plugin: 'idea'
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencies {
+        compile project(":aries-auth-common")
+        compileOnly("org.springframework.boot:spring-boot-starter-web")
+        //compile("org.springframework.security.oauth:spring-security-oauth2:2.1.6.RELEASE")
+        //compile 'org.springframework.security:spring-security-jwt:5.3.3.RELEASE'
+        //annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+        }
+    }
+}
+
+project(':aries-auth-implicit-facade') {
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencies {
+        compile project(":aries-auth-common")
+        compileOnly("org.springframework.boot:spring-boot-starter-web")
+        compile 'org.springframework.security:spring-security-jwt:1.1.1.RELEASE'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+        }
+    }
+}

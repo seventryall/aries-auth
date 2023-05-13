@@ -1,0 +1,47 @@
+server:
+  port: 8088
+  servlet:
+    context-path: /auth
+
+security:
+  oauth2:
+    resource:
+      id: aries-auth
+      secret: 1234
+    jwtSignKey: 45bb2632-b737-423b-91f1-42849884428f
+    accessTokenValiditySeconds: 60
+    allowAutoRefreshTokenSeconds: 600
+    setCookie: true
+    cookie:
+       domain: localhost
+       maxAge: 86400
+
+spring:
+  application:
+    name: aries-auth
+  datasource:
+    druid:
+      #   数据源基本配置
+      #       type: com.alibaba.druid.pool.DruidDataSource
+      username: root
+      password: 7hhiDvvk2nUyTyDNvR0F
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://47.102.111.90:3306/mall_anybuy?useSSL=false&useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&autoReconnect=true&serverTimezone=Asia/Shanghai
+  redis:
+    #    jedis:
+    #      pool:
+    #        max-active: 200
+    #        max-idle: 10
+    #        max-wait: -1
+    #        min-idle: 0
+    timeout: 5000
+    host: 47.102.111.90
+    port: 6379
+    password: "123456"
+    database: 0
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+

@@ -1,0 +1,11 @@
+rootProject.name = 'aries-auth'
+
+include 'aries-auth-common'
+include 'aries-auth-storage'
+include 'aries-auth-dal'
+include 'aries-auth-server'
+include 'aries-auth-client'
+include 'aries-auth-client2'
+include 'aries-auth-facade'
+include 'aries-auth-implicit-facade'
+

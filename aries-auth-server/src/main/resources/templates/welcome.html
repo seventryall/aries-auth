@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>密码模式</title>
+</head>
+<body>
+<h1>欢迎</h1>
+<div>
+    <span id="username"></span>
+    <input type="button" id="logout" value="退出" onclick="logout()"/>
+</div>
+<script type="text/javascript" src="../lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="../js/api.js"></script>
+<script>
+    let url="/auth/user/current/info";
+    Auth.Api.get(url, null,
+        function (res) {
+            if (res.status != 0) {
+                window.location.href = "/auth/oauth2/login";
+            } else {
+                $("#username").text(res.data.name);
+            }
+        }, function (res) {
+            alert(res);
+        });
+    function logout(){
+        Auth.Api.get("/auth/oauth2/logout", null,
+            function (res) {
+                    window.location.href = "/auth/oauth2/login";
+            }, function (res) {
+                alert(res);
+            });
+    }
+</script>
+</body>
+</html>
